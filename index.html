@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Build Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: loud, playful maker's workshop - a kid's garage lab with the door blown off
+   IDEA: a workbench parts bin - each project is a labelled part tray
+   PICTURE: the desk buddy (pixel face, top hat) with a cartoon explosion behind it
+   COLOUR and TYPE: the filament colours - black, red, light blue; Bungee titles, Rubik text
+   LAYOUT: nav, big hero scene, project trays with a filter, about, footer */
+
+/* ---------- Colours: change these to restyle the whole site ---------- */
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f1ea,#111214);
+  --panel:light-dark(#ffffff,#1b1d21);
+  --ink:light-dark(#131313,#f1f1f1);
+  --soft:light-dark(#55565b,#a9adb5);
+  --red:#e3242b;
+  --blue:#7fd3f2;
+  --yellow:#ffc531;
+  --line:light-dark(#dedad0,#2b2e34);
+}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Rubik,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Bungee,Impact,sans-serif;font-weight:400;line-height:1.05;text-wrap:balance;margin:0}
+a{color:inherit}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+
+/* ---------- Top navigation ---------- */
+nav{position:sticky;top:0;z-index:5;background:#111214;color:#f1f1f1;border-bottom:4px solid var(--red)}
+nav .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;padding:12px max(5vw,16px)}
+.logo{font-family:Bungee,sans-serif;font-size:20px;text-decoration:none;margin-right:auto}
+.logo span{color:var(--red)}
+nav a.link{text-decoration:none;padding:10px 4px;font-weight:500}
+nav a.link:hover,nav a.link:focus-visible{color:var(--blue)}
+
+/* ---------- Hero ---------- */
+.hero{background:#111214;color:#f1f1f1}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:center}
+.hero h1{font-size:clamp(44px,7vw,84px)}
+.hero h1 span{display:block;color:var(--red)}
+.hero p{font-size:19px;color:#c9ccd2;max-width:30em;margin:20px 0 28px}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:10px;font-weight:700;text-decoration:none;border:3px solid var(--ink);cursor:pointer;font:700 16px Rubik,sans-serif}
+.btn.main{background:var(--red);color:#fff;border-color:#000;box-shadow:4px 4px 0 #000}
+.btn.main:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000}
+.btn:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.scene{position:relative;aspect-ratio:1/0.85}
+.scene svg{position:absolute;inset:0;width:100%;height:100%}
+#burst{transform-origin:300px 250px;animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@media(prefers-reduced-motion:reduce){#burst,.eye{animation:none}}
+
+/* ---------- Projects ---------- */
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px}
+.head h2{font-size:clamp(32px,4.5vw,48px)}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--ink);background:transparent;color:var(--ink);font:500 15px Rubik,sans-serif;cursor:pointer}
+.filters button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:20px}
+.card{background:var(--panel);border:3px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column}
+.card .art{height:120px;display:grid;place-items:center;border-bottom:3px solid var(--ink)}
+.card .art svg{width:84px;height:84px}
+.card .body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:21px}
+.card p{margin:0;color:var(--soft);font-size:16px}
+.tag{align-self:flex-start;font-size:13px;font-weight:700;padding:4px 10px;border-radius:6px;border:2px solid var(--ink)}
+.tag.built{background:var(--blue);color:#111}
+.tag.progress{background:var(--yellow);color:#111}
+.tag.planned{background:transparent}
+.empty{color:var(--soft)}
+
+/* ---------- About + footer ---------- */
+.about .wrap{max-width:760px}
+.about h2{font-size:clamp(32px,4.5vw,48px);margin-bottom:16px}
+footer{background:#111214;color:#a9adb5;font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+/* ---------- Phones ---------- */
+@media(max-width:700px){
+  .hero .wrap{grid-template-columns:minmax(0,1fr)}
+  .scene{max-width:440px;width:100%;margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation bar -->
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">The Build <span>Bench</span></a>
+    <a class="link" href="#projects">Projects</a>
+    <a class="link" href="#about">About</a>
+  </div>
+</nav>
+
+<!-- Hero: the big first screen -->
+<header class="hero band" id="top">
+  <div class="wrap">
+    <div>
+      <h1>The Build <span>Bench</span></h1>
+      <p>I build little gadgets with ESP32 boards and 3D printers, try weird art experiments and play games. This is where I keep track of everything I'm making.</p>
+      <a class="btn main" href="#projects">See my builds</a>
+    </div>
+
+    <!-- The desk buddy drawing, made with SVG shapes -->
+    <div class="scene" aria-label="Drawing of a small desk robot with a pixel face and a top hat, in front of a cartoon explosion">
+      <svg viewBox="0 0 600 500" role="img">
+        <polygon id="burst" fill="#e3242b"></polygon>
+        <polygon id="burst2" fill="#ffc531"></polygon>
+        <!-- shadow -->
+        <ellipse cx="300" cy="440" rx="150" ry="18" fill="#000" opacity=".45"/>
+        <!-- body -->
+        <rect x="185" y="200" width="230" height="230" rx="34" fill="#1b1d21" stroke="#000" stroke-width="8"/>
+        <rect x="197" y="212" width="206" height="20" rx="10" fill="#fff" opacity=".08"/>
+        <!-- screen -->
+        <rect x="215" y="240" width="170" height="130" rx="14" fill="#7fd3f2" stroke="#000" stroke-width="6"/>
+        <rect class="eye" x="255" y="275" width="26" height="30" fill="#111"/>
+        <rect class="eye" x="319" y="275" width="26" height="30" fill="#111"/>
+        <path d="M262 330 h12 v10 h52 v-10 h12 v20 h-76z" fill="#111"/>
+        <!-- buttons -->
+        <circle cx="245" cy="400" r="10" fill="#e3242b" stroke="#000" stroke-width="4"/>
+        <circle cx="275" cy="400" r="10" fill="#7fd3f2" stroke="#000" stroke-width="4"/>
+        <!-- top hat -->
+        <rect x="215" y="180" width="170" height="26" rx="8" fill="#111" stroke="#000" stroke-width="6"/>
+        <rect x="245" y="90" width="110" height="96" rx="8" fill="#111" stroke="#000" stroke-width="6"/>
+        <rect x="245" y="150" width="110" height="20" fill="#e3242b"/>
+        <rect x="255" y="100" width="14" height="44" rx="6" fill="#fff" opacity=".12"/>
+        <!-- sparks -->
+        <circle cx="120" cy="120" r="10" fill="#7fd3f2"/>
+        <circle cx="500" cy="90" r="7" fill="#fff"/>
+        <circle cx="520" cy="360" r="12" fill="#7fd3f2"/>
+        <circle cx="80" cy="330" r="6" fill="#fff"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- Projects: the cards are made from the list in the script at the bottom -->
+<section class="band" id="projects">
+  <div class="wrap">
+    <div class="head">
+      <h2>Projects</h2>
+      <div class="filters" id="filters">
+        <button aria-pressed="true" data-f="all">All</button>
+        <button aria-pressed="false" data-f="built">Built</button>
+        <button aria-pressed="false" data-f="progress">In progress</button>
+        <button aria-pressed="false" data-f="planned">Planned</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="about band" id="about">
+  <div class="wrap">
+    <h2>About me</h2>
+    <p>I like making things from scratch: soldering, wiring, programming tiny screens and designing cases to 3D print. Change this paragraph to say whatever you like about yourself!</p>
+  </div>
+</section>
+
+<footer class="band">
+  <div class="wrap">
+    <span>The Build Bench</span>
+    <span>Built by hand, with HTML and CSS</span>
+  </div>
+</footer>
+
+<script>
+{
+  /* ---- Your projects: add, remove or edit entries here ----
+     status can be "built", "progress" or "planned"
+     icon can be "screen", "phone", "magnet" or "chip" */
+  const projects = [
+    {name:"Desk buddy", status:"built", icon:"screen", text:"An ESP32-C6 with a 1.47\" touch screen that sits on my desk, in a retro gaming case with a top hat."},
+    {name:"Buddy necklace", status:"progress", icon:"screen", text:"The same ESP32 board and battery, shrunk into a wearable case with a string hole."},
+    {name:"PC status display", status:"progress", icon:"chip", text:"A little screen that shows my PC parts' temperatures and stats while I game."},
+    {name:"DIY phone", status:"planned", icon:"phone", text:"My own phone, built on a Waveshare ESP32-P4 board with a 4.3\" touch screen."},
+    {name:"Levitating Lego display", status:"planned", icon:"magnet", text:"A magnetic levitation base that floats Lego sets in the air, built totally from scratch."},
+    {name:"Mini computer", status:"planned", icon:"chip", text:"A tiny computer under £100 that can browse the web and play videos."}
+  ];
+
+  const labels = {built:"Built", progress:"In progress", planned:"Planned"};
+  const colours = {built:"#7fd3f2", progress:"#ffc531", planned:"#e3242b"};
+  const icons = {
+    screen:'<rect x="14" y="18" width="56" height="50" rx="8" fill="#1b1d21" stroke="#000" stroke-width="4"/><rect x="22" y="26" width="40" height="30" rx="4" fill="#7fd3f2"/><rect x="31" y="34" width="6" height="8" fill="#111"/><rect x="47" y="34" width="6" height="8" fill="#111"/>',
+    phone:'<rect x="24" y="8" width="36" height="68" rx="8" fill="#1b1d21" stroke="#000" stroke-width="4"/><rect x="30" y="16" width="24" height="46" rx="3" fill="#7fd3f2"/><circle cx="42" cy="68" r="3" fill="#fff"/>',
+    magnet:'<path d="M18 14h16v30a8 8 0 0 0 16 0V14h16v30a24 24 0 0 1-48 0z" fill="#e3242b" stroke="#000" stroke-width="4"/><rect x="18" y="14" width="16" height="12" fill="#fff"/><rect x="50" y="14" width="16" height="12" fill="#fff"/>',
+    chip:'<rect x="20" y="20" width="44" height="44" rx="6" fill="#1b1d21" stroke="#000" stroke-width="4"/><rect x="32" y="32" width="20" height="20" fill="#7fd3f2"/><path d="M28 10v10M42 10v10M56 10v10M28 64v10M42 64v10M56 64v10M10 28h10M10 42h10M10 56h10M64 28h10M64 42h10M64 56h10" stroke="#000" stroke-width="4"/>'
+  };
+
+  const grid = document.getElementById("grid");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  function show(filter){
+    const list = projects.filter(p => filter === "all" || p.status === filter);
+    grid.innerHTML = list.length ? list.map(p => `
+      <article class="card">
+        <div class="art" style="background:${colours[p.status]}">
+          <svg viewBox="0 0 84 84" aria-hidden="true">${icons[p.icon] || icons.chip}</svg>
+        </div>
+        <div class="body">
+          <span class="tag ${p.status}">${labels[p.status]}</span>
+          <h3>${esc(p.name)}</h3>
+          <p>${esc(p.text)}</p>
+        </div>
+      </article>`).join("") : '<p class="empty">Nothing here yet!</p>';
+  }
+
+  const filters = document.getElementById("filters");
+  filters.addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    for (const x of filters.querySelectorAll("button")) x.setAttribute("aria-pressed", x === b);
+    show(b.dataset.f);
+  });
+  show("all");
+
+  /* ---- Draws the spiky explosion behind the desk buddy ---- */
+  function star(id, spikes, outer, inner){
+    const pts = [];
+    for (let i = 0; i < spikes * 2; i++){
+      const r = i % 2 ? inner : outer * (0.85 + 0.15 * ((i * 7) % 3) / 2);
+      const a = Math.PI * i / spikes;
+      pts.push((300 + r * Math.cos(a)).toFixed(1) + "," + (250 + r * Math.sin(a)).toFixed(1));
+    }
+    document.getElementById(id).setAttribute("points", pts.join(" "));
+  }
+  star("burst", 14, 245, 150);
+  star("burst2", 11, 170, 110);
+}
+</script>
+</body>
+</html>
